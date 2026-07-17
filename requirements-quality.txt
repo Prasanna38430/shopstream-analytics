@@ -1,0 +1,14 @@
+# =========================================================
+#  Data-quality environment — Great Expectations (Phase 7)
+#
+#  GE conflicts with dbt in a shared env, so install it in its
+#  OWN virtual environment when you reach Phase 7:
+#
+#     py -3.11 -m venv .venv-ge
+#     source .venv-ge/Scripts/activate      # Git Bash
+#     pip install -r requirements-quality.txt
+#
+#  In production this runs as an isolated Airflow task.
+# =========================================================
+
+great-expectations>=1.2,<1.3

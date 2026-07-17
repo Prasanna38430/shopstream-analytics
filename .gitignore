@@ -1,0 +1,35 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+
+# Environment & secrets — NEVER commit these
+.env
+*.env
+!.env.example
+
+# Generated data
+data/*.csv
+data/*.json
+!data/.gitkeep
+
+# dbt
+dbt/shopstream/target/
+dbt/shopstream/dbt_packages/
+dbt/shopstream/logs/
+
+# Great Expectations local artifacts
+great_expectations/uncommitted/
+
+# Airflow
+airflow/logs/
+airflow/plugins/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

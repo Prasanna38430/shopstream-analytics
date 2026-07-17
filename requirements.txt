@@ -1,0 +1,21 @@
+# =========================================================
+#  Core environment — ingestion + dbt + tests
+#  Install with:  pip install -r requirements.txt
+#
+#  NOTE: great-expectations is intentionally NOT here. It has
+#  heavy dependencies that conflict with dbt, so it lives in its
+#  own environment (requirements-quality.txt) — installed in
+#  Phase 7. This separation mirrors how the tools run in production.
+# =========================================================
+
+# --- Core ingestion (Phases 1-2) ---
+snowflake-connector-python>=3.12,<4.0
+pandas>=2.1,<2.3
+faker>=30.0
+python-dotenv>=1.0
+
+# --- dbt (Phase 3) ---
+dbt-snowflake>=1.8,<1.9
+
+# --- Testing (Phase 8) ---
+pytest>=8.0
