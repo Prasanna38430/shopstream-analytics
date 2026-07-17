@@ -89,7 +89,7 @@ Great Expectations has dependencies that clash with dbt, so it lives in its own 
 Work in progress, built in phases. Done so far:
 
 - [x] Project scaffold, Snowflake warehouse + schemas, credential handling
-- [ ] Raw data ingestion
+- [x] Raw data ingestion — 110.5k rows loaded into RAW
 - [ ] dbt staging models
 - [ ] dbt marts (star schema)
 - [ ] Tests, docs, and lineage
