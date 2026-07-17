@@ -92,7 +92,7 @@ Work in progress, built in phases. Done so far:
 - [x] Raw data ingestion — 110.5k rows loaded into RAW
 - [x] dbt staging models — dedup, type casting, standardized values
 - [x] dbt marts — star schema, incremental fact table
-- [ ] Tests, docs, and lineage
+- [x] Tests, docs, and lineage — 27 tests passing, documented models
 - [ ] Airflow orchestration
 - [ ] Great Expectations suites
 - [ ] CI/CD
