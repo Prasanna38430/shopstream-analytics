@@ -1,0 +1,118 @@
+version: 2
+
+models:
+  - name: fact_orders
+    description: >
+      Order fact table. Grain is one row per order. Holds foreign keys to the
+      customer and product dimensions plus the order amount and dates.
+      Built incrementally on ordered_at.
+    columns:
+      - name: order_id
+        description: Primary key. Unique identifier for the order.
+        tests:
+          - unique
+          - not_null
+      - name: customer_id
+        description: Foreign key to dim_customers.
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_customers')
+                field: customer_id
+      - name: product_id
+        description: Foreign key to dim_products.
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_products')
+                field: product_id
+      - name: order_status
+        description: Order state, lower-cased in staging.
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['completed', 'shipped', 'pending', 'cancelled', 'returned']
+      - name: amount
+        description: Order value in dollars. Always positive (bad amounts filtered in staging).
+        tests:
+          - not_null
+      - name: ordered_at
+        description: Timestamp the order was placed.
+      - name: order_date
+        description: Order date, derived from ordered_at. Used by the daily rollup.
+
+  - name: dim_customers
+    description: >
+      Customer dimension, one row per customer. Descriptive attributes plus
+      lifetime value and order-frequency metrics.
+    columns:
+      - name: customer_id
+        description: Primary key.
+        tests:
+          - unique
+          - not_null
+      - name: customer_name
+        description: Customer full name.
+      - name: email
+        description: Lower-cased email, deduplicated in staging.
+      - name: country_code
+        description: ISO-2 country code. Null where the source country was missing.
+        tests:
+          - accepted_values:
+              arguments:
+                values: ['US', 'GB', 'IN', 'DE', 'FR', 'CA', 'AU']
+      - name: signup_date
+        description: Date the customer signed up.
+      - name: order_count
+        description: Number of valid orders placed. Zero for customers who never ordered.
+      - name: lifetime_value
+        description: Sum of the customer's order amounts.
+      - name: avg_order_value
+        description: Average order amount for the customer.
+      - name: first_order_date
+        description: Date of the customer's first order.
+      - name: last_order_date
+        description: Date of the customer's most recent order.
+
+  - name: dim_products
+    description: Product dimension, one row per product, with a category to department rollup.
+    columns:
+      - name: product_id
+        description: Primary key.
+        tests:
+          - unique
+          - not_null
+      - name: product_name
+        description: Product name.
+      - name: brand
+        description: Product brand.
+      - name: category
+        description: Normalised product category.
+      - name: department
+        description: Broader grouping the category rolls up into.
+        tests:
+          - accepted_values:
+              arguments:
+                values: ['Technology', 'Media', 'Personal Care', 'Household', 'Leisure', 'Other']
+      - name: price
+        description: Unit price in dollars. Missing prices filled with the average in staging.
+
+  - name: agg_daily_revenue
+    description: Daily revenue rollup for dashboards. One row per order date.
+    columns:
+      - name: order_date
+        description: The day being summarised. Primary key.
+        tests:
+          - unique
+          - not_null
+      - name: order_count
+        description: Number of orders that day.
+      - name: unique_customers
+        description: Distinct customers who ordered that day.
+      - name: total_revenue
+        description: Sum of order amounts that day.
+      - name: avg_order_value
+        description: Average order amount that day.
