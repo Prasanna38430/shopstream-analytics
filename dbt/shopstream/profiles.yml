@@ -1,0 +1,17 @@
+# Connection profile for dbt. Credentials are pulled from environment
+# variables (the same .env used by the ingestion scripts) so nothing
+# sensitive is committed. Load the env before running dbt, e.g. in Git Bash:
+#     set -a; source ../../.env; set +a
+shopstream:
+  target: dev
+  outputs:
+    dev:
+      type: snowflake
+      account: "{{ env_var('SNOWFLAKE_ACCOUNT') }}"
+      user: "{{ env_var('SNOWFLAKE_USER') }}"
+      password: "{{ env_var('SNOWFLAKE_PASSWORD') }}"
+      role: "{{ env_var('SNOWFLAKE_ROLE') }}"
+      warehouse: "{{ env_var('SNOWFLAKE_WAREHOUSE') }}"
+      database: "{{ env_var('SNOWFLAKE_DATABASE') }}"
+      schema: STAGING
+      threads: 4

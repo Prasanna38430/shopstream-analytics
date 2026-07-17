@@ -1,0 +1,24 @@
+name: 'shopstream'
+version: '1.0.0'
+config-version: 2
+
+profile: 'shopstream'
+
+model-paths: ["models"]
+macro-paths: ["macros"]
+test-paths: ["tests"]
+seed-paths: ["seeds"]
+snapshot-paths: ["snapshots"]
+
+target-path: "target"
+clean-targets:
+  - "target"
+  - "dbt_packages"
+
+# Staging is lightweight cleanup, so views are fine (no storage cost,
+# always fresh). Marts come in phase 4 as materialized tables.
+models:
+  shopstream:
+    staging:
+      +materialized: view
+      +schema: staging
