@@ -5,29 +5,58 @@ models:
     description: Cleaned customers — deduplicated on email, countries mapped to ISO-2 codes.
     columns:
       - name: customer_id
+        description: Primary key from the source system.
         tests:
           - unique
           - not_null
+      - name: customer_name
+        description: Trimmed customer name.
       - name: email
+        description: Lower-cased email. Deduplicated so one row survives per address.
         tests:
           - unique
           - not_null
+      - name: country_code
+        description: ISO-2 code mapped from the messy source country values. Null when missing.
+      - name: signup_date
+        description: Date the customer signed up.
 
   - name: stg_products
     description: Cleaned products — normalised categories, missing prices filled with the average.
     columns:
       - name: product_id
+        description: Primary key.
         tests:
           - unique
           - not_null
+      - name: product_name
+        description: Trimmed product name.
+      - name: category
+        description: Category with consistent casing and no stray whitespace.
+      - name: price
+        description: Unit price. Nulls replaced with the overall average.
+      - name: brand
+        description: Product brand.
 
   - name: stg_orders
     description: Cleaned orders — zero/negative amounts removed, status lower-cased.
     columns:
       - name: order_id
+        description: Primary key.
         tests:
           - unique
           - not_null
+      - name: customer_id
+        description: Reference to the customer who placed the order.
+      - name: product_id
+        description: Reference to the product ordered.
       - name: amount
+        description: Order value in dollars. Only positive amounts kept.
         tests:
           - not_null
+      - name: order_status
+        description: Lower-cased order state.
+      - name: ordered_at
+        description: Timestamp the order was placed.
+      - name: order_date
+        description: Order date derived from the timestamp.
