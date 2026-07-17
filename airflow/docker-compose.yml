@@ -9,13 +9,19 @@ x-airflow-common: &airflow-common
     AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
     AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
     AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: 'true'
+    # Where dbt finds profiles.yml inside the container.
+    DBT_PROFILES_DIR: /opt/airflow/dbt/shopstream
     # Install our Python deps into the Airflow image at startup.
-    _PIP_ADDITIONAL_REQUIREMENTS: ${_PIP_ADDITIONAL_REQUIREMENTS:-dbt-snowflake==1.8.4 snowflake-connector-python==3.12.3 faker==30.8.2}
+    _PIP_ADDITIONAL_REQUIREMENTS: ${_PIP_ADDITIONAL_REQUIREMENTS:-dbt-snowflake==1.8.4 snowflake-connector-python==3.18.0 faker==40.21.0 python-dotenv==1.2.2 pandas==2.2.3}
+  # Snowflake credentials come from the project-root .env (SNOWFLAKE_* vars).
+  env_file:
+    - ../.env
   volumes:
     - ./dags:/opt/airflow/dags
     - ./logs:/opt/airflow/logs
     - ../dbt:/opt/airflow/dbt          # mount dbt project so DAG can run it
     - ../ingestion:/opt/airflow/ingestion
+    - ../data:/opt/airflow/data        # generated CSVs shared between tasks
   depends_on:
     postgres:
       condition: service_healthy
