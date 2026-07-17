@@ -1,0 +1,33 @@
+version: 2
+
+models:
+  - name: stg_customers
+    description: Cleaned customers — deduplicated on email, countries mapped to ISO-2 codes.
+    columns:
+      - name: customer_id
+        tests:
+          - unique
+          - not_null
+      - name: email
+        tests:
+          - unique
+          - not_null
+
+  - name: stg_products
+    description: Cleaned products — normalised categories, missing prices filled with the average.
+    columns:
+      - name: product_id
+        tests:
+          - unique
+          - not_null
+
+  - name: stg_orders
+    description: Cleaned orders — zero/negative amounts removed, status lower-cased.
+    columns:
+      - name: order_id
+        tests:
+          - unique
+          - not_null
+      - name: amount
+        tests:
+          - not_null
