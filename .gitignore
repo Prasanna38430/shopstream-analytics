@@ -20,6 +20,7 @@ data/*.json
 dbt/shopstream/target/
 dbt/shopstream/dbt_packages/
 dbt/shopstream/logs/
+dbt/shopstream/.user.yml
 
 # Great Expectations local artifacts
 great_expectations/uncommitted/
