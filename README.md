@@ -93,7 +93,7 @@ Work in progress, built in phases. Done so far:
 - [x] dbt staging models — dedup, type casting, standardized values
 - [x] dbt marts — star schema, incremental fact table
 - [x] Tests, docs, and lineage — 27 tests passing, documented models
-- [ ] Airflow orchestration
+- [x] Airflow orchestration — full pipeline as a scheduled DAG
 - [ ] Great Expectations suites
 - [ ] CI/CD
 
