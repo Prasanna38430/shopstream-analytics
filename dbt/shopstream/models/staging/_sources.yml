@@ -1,0 +1,23 @@
+version: 2
+
+sources:
+  - name: raw
+    description: Raw data landed by the ingestion scripts, untransformed.
+    database: SHOPSTREAM
+    schema: RAW
+    tables:
+      - name: raw_customers
+        description: One row per customer as generated. Contains duplicate emails and missing countries.
+
+      - name: raw_products
+        description: Product catalog. Some rows are missing a price.
+
+      - name: raw_orders
+        description: Order transactions. A small share have zero or negative amounts.
+        # Freshness is checked against the newest order timestamp. If the
+        # ingestion hasn't run in a day, orders are considered stale.
+        config:
+          loaded_at_field: created_at
+          freshness:
+            warn_after: {count: 24, period: hour}
+            error_after: {count: 48, period: hour}
