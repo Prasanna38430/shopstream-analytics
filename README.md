@@ -91,7 +91,7 @@ Work in progress, built in phases. Done so far:
 - [x] Project scaffold, Snowflake warehouse + schemas, credential handling
 - [x] Raw data ingestion — 110.5k rows loaded into RAW
 - [x] dbt staging models — dedup, type casting, standardized values
-- [ ] dbt marts (star schema)
+- [x] dbt marts — star schema, incremental fact table
 - [ ] Tests, docs, and lineage
 - [ ] Airflow orchestration
 - [ ] Great Expectations suites
