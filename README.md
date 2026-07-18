@@ -94,7 +94,7 @@ Work in progress, built in phases. Done so far:
 - [x] dbt marts — star schema, incremental fact table
 - [x] Tests, docs, and lineage — 27 tests passing, documented models
 - [x] Airflow orchestration — full pipeline as a scheduled DAG
-- [ ] Great Expectations suites
+- [x] Great Expectations suites — fact + dimension validation
 - [ ] CI/CD
 
 ## Notes
