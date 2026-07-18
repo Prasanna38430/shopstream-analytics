@@ -1,14 +1,18 @@
 # =========================================================
 #  Data-quality environment — Great Expectations (Phase 7)
 #
-#  GE conflicts with dbt in a shared env, so install it in its
-#  OWN virtual environment when you reach Phase 7:
+#  GE's dependencies clash with dbt, so it lives in its OWN virtual
+#  environment. Set it up with:
 #
 #     py -3.11 -m venv .venv-ge
 #     source .venv-ge/Scripts/activate      # Git Bash
 #     pip install -r requirements-quality.txt
 #
-#  In production this runs as an isolated Airflow task.
+#  The validation script reads the mart tables straight from Snowflake,
+#  so the connector and pandas belong here too.
 # =========================================================
 
 great-expectations>=1.2,<1.3
+snowflake-connector-python>=3.12,<4.0
+pandas>=2.1,<2.3
+python-dotenv>=1.0
