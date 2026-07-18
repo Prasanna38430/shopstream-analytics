@@ -1,5 +1,7 @@
 # ShopStream Analytics Platform
 
+[![CI](https://github.com/Prasanna38430/shopstream-analytics/actions/workflows/ci.yml/badge.svg)](https://github.com/Prasanna38430/shopstream-analytics/actions/workflows/ci.yml)
+
 An end-to-end ELT pipeline for a fictional e-commerce company, built on the modern data stack. Raw order, customer, and product data is ingested into Snowflake, transformed through dbt into a clean star schema, orchestrated with Airflow, and validated with Great Expectations — with CI running on every push.
 
 I built this to get hands-on with Snowflake and dbt and to have a realistic, reproducible pipeline I could point to rather than a notebook full of one-off scripts.
