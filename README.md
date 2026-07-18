@@ -97,7 +97,7 @@ Work in progress, built in phases. Done so far:
 - [x] Tests, docs, and lineage — 27 tests passing, documented models
 - [x] Airflow orchestration — full pipeline as a scheduled DAG
 - [x] Great Expectations suites — fact + dimension validation
-- [ ] CI/CD
+- [x] CI/CD — GitHub Actions, tests on every push, deploy on merge
 
 ## Notes
 
