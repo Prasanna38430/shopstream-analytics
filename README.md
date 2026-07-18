@@ -10,13 +10,13 @@ I built this to get hands-on with Snowflake and dbt and to have a realistic, rep
 
 ```mermaid
 flowchart LR
-    A[Python + Faker<br/>synthetic data] -->|COPY INTO| B[(Snowflake<br/>RAW)]
-    B --> C[dbt staging<br/>STAGING]
-    C --> D[dbt marts<br/>MARTS: facts + dims]
-    D --> E[BI / analytics]
+    A[Python and Faker] -->|COPY INTO| B[(Snowflake RAW)]
+    B --> C[dbt staging]
+    C --> D[dbt marts]
+    D --> E[BI and analytics]
 
-    GE[Great Expectations] -.validates.-> D
-    AF[Airflow DAG] -.orchestrates.-> A
+    GE[Great Expectations] -. validates .-> D
+    AF[Airflow DAG] -. orchestrates .-> A
     AF -.-> B
     AF -.-> C
     AF -.-> D
