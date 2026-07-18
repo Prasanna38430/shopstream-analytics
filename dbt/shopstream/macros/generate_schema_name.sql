@@ -7,6 +7,9 @@
 {% macro generate_schema_name(custom_schema_name, node) -%}
     {%- if custom_schema_name is none -%}
         {{ target.schema }}
+    {%- elif target.name == 'ci' -%}
+        {# CI builds into its own schemas so it never touches real data #}
+        {{ ('ci_' ~ custom_schema_name) | trim | upper }}
     {%- else -%}
         {{ custom_schema_name | trim | upper }}
     {%- endif -%}
