@@ -9,18 +9,14 @@ I built this to get hands-on with Snowflake and dbt and to have a realistic, rep
 ## Architecture
 
 ```mermaid
-flowchart LR
+flowchart TD
     A[Python and Faker] -->|COPY INTO| B[(Snowflake RAW)]
     B --> C[dbt staging]
     C --> D[dbt marts]
     D --> E[BI and analytics]
 
-    GE[Great Expectations] -. validates .-> D
     AF[Airflow DAG] -. orchestrates .-> A
-    AF -.-> B
-    AF -.-> C
-    AF -.-> D
-    AF -.-> GE
+    GE[Great Expectations] -. validates .-> D
 ```
 
 Data moves through three schema layers, following the medallion pattern:
