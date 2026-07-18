@@ -11,8 +11,10 @@ x-airflow-common: &airflow-common
     AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: 'true'
     # Where dbt finds profiles.yml inside the container.
     DBT_PROFILES_DIR: /opt/airflow/dbt/shopstream
-    # Install our Python deps into the Airflow image at startup.
-    _PIP_ADDITIONAL_REQUIREMENTS: ${_PIP_ADDITIONAL_REQUIREMENTS:-dbt-snowflake==1.8.4 snowflake-connector-python==3.18.0 faker==40.21.0 python-dotenv==1.2.2 pandas==2.2.3}
+    # Install our Python deps into the Airflow image at startup. virtualenv is
+    # needed so the data-quality task can run Great Expectations in an isolated
+    # environment (GE conflicts with dbt, so it can't live in this image).
+    _PIP_ADDITIONAL_REQUIREMENTS: ${_PIP_ADDITIONAL_REQUIREMENTS:-dbt-snowflake==1.8.4 snowflake-connector-python==3.18.0 faker==40.21.0 python-dotenv==1.2.2 pandas==2.2.3 virtualenv==20.26.6}
   # Snowflake credentials come from the project-root .env (SNOWFLAKE_* vars).
   env_file:
     - ../.env
@@ -22,6 +24,7 @@ x-airflow-common: &airflow-common
     - ../dbt:/opt/airflow/dbt          # mount dbt project so DAG can run it
     - ../ingestion:/opt/airflow/ingestion
     - ../data:/opt/airflow/data        # generated CSVs shared between tasks
+    - ../great_expectations:/opt/airflow/great_expectations  # GE validation script
   depends_on:
     postgres:
       condition: service_healthy

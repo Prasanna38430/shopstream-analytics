@@ -12,11 +12,21 @@ from datetime import datetime, timedelta
 
 from airflow import DAG
 from airflow.operators.bash import BashOperator
-from airflow.operators.empty import EmptyOperator
-from airflow.operators.python import PythonOperator
+from airflow.operators.python import PythonOperator, PythonVirtualenvOperator
 
 INGESTION_DIR = "/opt/airflow/ingestion"
 DBT_DIR = "/opt/airflow/dbt/shopstream"
+GE_DIR = "/opt/airflow/great_expectations"
+
+# Requirements for the isolated Great Expectations environment (see the
+# data_quality_check task). Kept separate from the image because GE's deps
+# conflict with dbt's.
+GE_REQUIREMENTS = [
+    "great-expectations>=1.2,<1.3",
+    "snowflake-connector-python>=3.12,<4.0",
+    "pandas>=2.1,<2.3",
+    "python-dotenv>=1.0",
+]
 
 
 def generate_raw_data(**_):
@@ -51,6 +61,16 @@ def ingest_to_snowflake(**_):
     import load_to_snowflake as loader
 
     loader.main()
+
+
+def run_data_quality():
+    """Run the Great Expectations suites. Executed in an isolated virtualenv."""
+    import sys
+
+    sys.path.insert(0, "/opt/airflow/great_expectations")
+    import validate_marts
+
+    validate_marts.main()
 
 
 default_args = {
@@ -103,7 +123,14 @@ with DAG(
         execution_timeout=timedelta(minutes=15),
     )
 
-    # Placeholder for the Great Expectations validation added in phase 7.
-    data_quality = EmptyOperator(task_id="data_quality_check")
+    # Great Expectations runs in its own throwaway virtualenv so its
+    # dependencies never touch the dbt install in this image.
+    data_quality = PythonVirtualenvOperator(
+        task_id="data_quality_check",
+        python_callable=run_data_quality,
+        requirements=GE_REQUIREMENTS,
+        system_site_packages=False,
+        execution_timeout=timedelta(minutes=20),
+    )
 
     generate >> ingest >> dbt_staging >> dbt_marts >> dbt_tests >> data_quality
