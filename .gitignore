@@ -35,3 +35,6 @@ airflow/plugins/
 Thumbs.db
 .vscode/
 .idea/
+
+# Personal study notes, not part of the project
+project-preparation/
