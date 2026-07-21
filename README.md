@@ -8,17 +8,7 @@ I put this together to get properly hands-on with Snowflake and dbt. I'd used Ai
 
 ## Architecture
 
-```mermaid
-flowchart TD
-    A[Python and Faker] -->|COPY INTO| B[(Snowflake RAW)]
-    B --> C[dbt staging]
-    C --> D[dbt marts]
-    D --> E[BI and analytics]
-
-    ML[DistilBERT sentiment scoring] -. writes scores .-> B
-    AF[Airflow DAG] -. orchestrates .-> A
-    GE[Great Expectations] -. validates .-> D
-```
+![ShopStream architecture](docs/images/architecture.png)
 
 The warehouse is split into three schemas following the medallion pattern, and data only ever moves in one direction:
 
