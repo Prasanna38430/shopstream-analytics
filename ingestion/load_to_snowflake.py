@@ -35,6 +35,7 @@ TABLES = {
     "raw_customers": "raw_customers.csv",
     "raw_products": "raw_products.csv",
     "raw_orders": "raw_orders.csv",
+    "raw_reviews": "raw_reviews.csv",
 }
 
 

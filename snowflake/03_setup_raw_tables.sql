@@ -32,3 +32,20 @@ CREATE OR REPLACE TABLE raw_orders (
     status        STRING,
     created_at    TIMESTAMP_NTZ
 );
+
+CREATE OR REPLACE TABLE raw_reviews (
+    review_id     NUMBER,
+    product_id    NUMBER,
+    customer_id   NUMBER,
+    rating        NUMBER,
+    review_text   STRING,
+    created_at    TIMESTAMP_NTZ
+);
+
+-- Sentiment scores written by the ML step (ingestion/score_reviews.py),
+-- not loaded from a CSV. Defined here so the table exists before dbt reads it.
+CREATE OR REPLACE TABLE review_sentiment (
+    review_id        NUMBER,
+    sentiment_label  STRING,
+    sentiment_score  FLOAT
+);
