@@ -100,6 +100,33 @@ models:
       - name: price
         description: Unit price in dollars. Missing prices filled with the average in staging.
 
+  - name: product_sentiment
+    description: >
+      One row per reviewed product, combining star ratings with DistilBERT
+      sentiment scores. Powers the AI-enrichment part of the project.
+    columns:
+      - name: product_id
+        description: Primary key. The product being summarised.
+        tests:
+          - unique
+          - not_null
+      - name: product_name
+        description: Product name from the dimension.
+      - name: category
+        description: Product category from the dimension.
+      - name: department
+        description: Broader department the category rolls up into.
+      - name: review_count
+        description: Number of reviews for the product.
+        tests:
+          - not_null
+      - name: avg_rating
+        description: Average star rating across the product's reviews.
+      - name: avg_sentiment_score
+        description: Average sentiment score, from -1 to 1.
+      - name: pct_positive
+        description: Percentage of reviews the model labelled positive.
+
   - name: agg_daily_revenue
     description: Daily revenue rollup for dashboards. One row per order date.
     columns:
