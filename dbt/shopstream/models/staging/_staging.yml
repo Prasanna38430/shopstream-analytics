@@ -60,3 +60,35 @@ models:
         description: Timestamp the order was placed.
       - name: order_date
         description: Order date derived from the timestamp.
+
+  - name: stg_reviews
+    description: Cleaned product reviews with star rating and text.
+    columns:
+      - name: review_id
+        description: Primary key.
+        tests:
+          - unique
+          - not_null
+      - name: product_id
+        description: Product the review is about.
+      - name: rating
+        description: Star rating from 1 to 5.
+      - name: review_text
+        description: Free-text review body.
+
+  - name: stg_review_sentiment
+    description: Model-generated sentiment per review, cleaned.
+    columns:
+      - name: review_id
+        description: References the review that was scored.
+        tests:
+          - unique
+          - not_null
+      - name: sentiment_label
+        description: POSITIVE, NEGATIVE, or NEUTRAL.
+        tests:
+          - accepted_values:
+              arguments:
+                values: ['POSITIVE', 'NEGATIVE', 'NEUTRAL']
+      - name: sentiment_score
+        description: Signed score from -1 (negative) to 1 (positive).

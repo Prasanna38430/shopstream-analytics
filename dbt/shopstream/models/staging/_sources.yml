@@ -21,3 +21,11 @@ sources:
           freshness:
             warn_after: {count: 24, period: hour}
             error_after: {count: 48, period: hour}
+
+      - name: raw_reviews
+        description: Product reviews with a star rating and free-text body.
+
+      - name: review_sentiment
+        description: >
+          Sentiment scores for each review, produced by a DistilBERT model in
+          the ML scoring step (ingestion/score_reviews.py), not loaded from CSV.
