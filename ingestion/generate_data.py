@@ -43,6 +43,31 @@ COUNTRY_VARIANTS = ["US", "USA", "United States", "UK", "GB", "United Kingdom",
                     "IN", "India", "DE", "Germany", "FR", "France",
                     "CA", "Canada", "AU", "Australia"]
 
+# Review text pools, chosen by star rating so the sentiment model has real
+# opinions to work with rather than random words.
+REVIEWS_POSITIVE = [
+    "Absolutely love this, it exceeded my expectations.",
+    "Great quality and fast shipping, would buy again.",
+    "Fantastic product, works exactly as described.",
+    "Really happy with this purchase, highly recommend it.",
+    "Excellent value for the price, very satisfied.",
+    "Better than I hoped, this is genuinely brilliant.",
+]
+REVIEWS_NEUTRAL = [
+    "It works fine, nothing special.",
+    "Okay product, does the job but feels a bit cheap.",
+    "Average quality, about what I expected for the price.",
+    "It is alright, not great but not bad either.",
+    "Decent enough, though I have seen better.",
+]
+REVIEWS_NEGATIVE = [
+    "Terrible quality, it broke after one day.",
+    "Very disappointed, it does not work as advertised.",
+    "Waste of money, I would not recommend it.",
+    "Poor build quality and the delivery was slow.",
+    "Awful experience, the item arrived damaged.",
+]
+
 fake = Faker()
 
 
@@ -139,11 +164,42 @@ def generate_orders(n: int, n_customers: int, n_products: int) -> None:
     log.info("wrote %s orders -> %s", f"{n:,}", path.name)
 
 
+def generate_reviews(n: int, n_customers: int, n_products: int) -> None:
+    path = DATA_DIR / "raw_reviews.csv"
+    now = datetime.now()
+
+    with path.open("w", newline="", encoding="utf-8") as f:
+        writer = csv.writer(f)
+        writer.writerow(["review_id", "product_id", "customer_id",
+                         "rating", "review_text", "created_at"])
+
+        for review_id in range(1, n + 1):
+            product_id = random.randint(1, n_products)
+            customer_id = random.randint(1, n_customers)
+            # Ratings skew positive like real reviews do.
+            rating = random.choices([5, 4, 3, 2, 1], weights=[40, 30, 15, 8, 7])[0]
+
+            if rating >= 4:
+                text = random.choice(REVIEWS_POSITIVE)
+            elif rating == 3:
+                text = random.choice(REVIEWS_NEUTRAL)
+            else:
+                text = random.choice(REVIEWS_NEGATIVE)
+
+            created = now - timedelta(seconds=random.randint(0, 365 * 24 * 60 * 60))
+
+            writer.writerow([review_id, product_id, customer_id, rating, text,
+                             created.strftime("%Y-%m-%d %H:%M:%S")])
+
+    log.info("wrote %s reviews -> %s", f"{n:,}", path.name)
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="Generate ShopStream synthetic data")
     parser.add_argument("--orders", type=int, default=100_000)
     parser.add_argument("--customers", type=int, default=10_000)
     parser.add_argument("--products", type=int, default=500)
+    parser.add_argument("--reviews", type=int, default=3_000)
     parser.add_argument("--seed", type=int, default=42,
                         help="fixed seed so runs are reproducible")
     args = parser.parse_args()
@@ -158,6 +214,7 @@ def main() -> None:
     generate_customers(args.customers)
     generate_products(args.products)
     generate_orders(args.orders, args.customers, args.products)
+    generate_reviews(args.reviews, args.customers, args.products)
 
     log.info("done")
 
