@@ -1,0 +1,22 @@
+# =========================================================
+#  Sentiment scoring environment (Phase: AI enrichment)
+#
+#  A pretrained DistilBERT model scores product reviews. PyTorch is heavy
+#  and only needed for this one step, so it lives in its own venv and stays
+#  out of the dbt/ingestion env, out of CI, and out of the Airflow image.
+#
+#  Setup (CPU-only torch keeps the download small):
+#     py -3.11 -m venv .venv-ml
+#     source .venv-ml/Scripts/activate
+#     pip install torch --index-url https://download.pytorch.org/whl/cpu
+#     pip install -r requirements-ml.txt
+#
+#  Windows note: PyTorch has very deeply nested files. If your project path
+#  is long (e.g. under OneDrive), the install can hit the 260-char path limit.
+#  If so, create this venv at a short path instead, e.g. C:\venvs\ml.
+# =========================================================
+
+transformers>=4.44,<5.0
+snowflake-connector-python[pandas]>=3.12,<4.0
+pandas>=2.1,<2.3
+python-dotenv>=1.0
