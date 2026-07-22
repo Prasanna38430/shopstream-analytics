@@ -1,0 +1,61 @@
+version: 2
+
+# Unit tests check the transformation logic against made-up inputs, rather
+# than checking the real data like the tests in _staging.yml do. They catch a
+# broken CASE statement or filter even when the warehouse happens to be empty.
+
+unit_tests:
+  - name: country_variants_map_to_iso_codes
+    description: The many spellings of a country should collapse to one ISO-2 code.
+    model: stg_customers
+    given:
+      - input: source('raw', 'raw_customers')
+        rows:
+          - {customer_id: 1, name: 'A', email: 'a@example.com', country: 'USA',            signup_date: '2024-01-01'}
+          - {customer_id: 2, name: 'B', email: 'b@example.com', country: 'United States',  signup_date: '2024-01-01'}
+          - {customer_id: 3, name: 'C', email: 'c@example.com', country: 'united kingdom', signup_date: '2024-01-01'}
+          - {customer_id: 4, name: 'D', email: 'd@example.com', country: 'Atlantis',       signup_date: '2024-01-01'}
+    expect:
+      rows:
+        - {customer_id: 1, country_code: 'US'}
+        - {customer_id: 2, country_code: 'US'}
+        - {customer_id: 3, country_code: 'GB'}
+        - {customer_id: 4, country_code: null}
+
+  - name: duplicate_emails_keep_earliest_signup
+    description: Two customers sharing an email should collapse to the earlier signup.
+    model: stg_customers
+    given:
+      - input: source('raw', 'raw_customers')
+        rows:
+          - {customer_id: 10, name: 'Early', email: 'dupe@example.com', country: 'US', signup_date: '2023-01-01'}
+          - {customer_id: 11, name: 'Later', email: 'DUPE@example.com', country: 'US', signup_date: '2024-06-01'}
+    expect:
+      rows:
+        - {customer_id: 10, email: 'dupe@example.com', country_code: 'US'}
+
+  - name: non_positive_order_amounts_are_dropped
+    description: Zero and negative amounts should not survive staging.
+    model: stg_orders
+    given:
+      - input: source('raw', 'raw_orders')
+        rows:
+          - {order_id: 1, customer_id: 1, product_id: 1, amount: 25.00,  status: 'COMPLETED', created_at: '2026-01-01 10:00:00'}
+          - {order_id: 2, customer_id: 1, product_id: 1, amount: 0.00,   status: 'completed', created_at: '2026-01-01 10:00:00'}
+          - {order_id: 3, customer_id: 1, product_id: 1, amount: -12.50, status: 'completed', created_at: '2026-01-01 10:00:00'}
+    expect:
+      rows:
+        - {order_id: 1, amount: 25.00, order_status: 'completed'}
+
+  - name: messy_categories_are_normalised
+    description: Casing and stray whitespace on categories should be cleaned up.
+    model: stg_products
+    given:
+      - input: source('raw', 'raw_products')
+        rows:
+          - {product_id: 1, name: 'A', category: 'ELECTRONICS',  price: 10.00, brand: 'X'}
+          - {product_id: 2, name: 'B', category: ' books ',      price: 20.00, brand: 'Y'}
+    expect:
+      rows:
+        - {product_id: 1, category: 'Electronics'}
+        - {product_id: 2, category: 'Books'}
