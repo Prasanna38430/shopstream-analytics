@@ -33,10 +33,24 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
+      # Skipped when no Snowflake credentials are configured, so a lapsed
+      # warehouse doesn't leave a permanently failing workflow behind.
+      - name: Check for Snowflake credentials
+        id: creds
+        run: |
+          if [ -n "$SNOWFLAKE_ACCOUNT" ]; then
+            echo "available=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "available=false" >> "$GITHUB_OUTPUT"
+            echo "No Snowflake credentials set, skipping the deploy."
+          fi
+
       - name: dbt deps
+        if: steps.creds.outputs.available == 'true'
         working-directory: dbt/shopstream
         run: dbt deps
 
       - name: dbt build against production
+        if: steps.creds.outputs.available == 'true'
         working-directory: dbt/shopstream
         run: dbt build --target prod --profiles-dir .

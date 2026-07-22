@@ -33,12 +33,27 @@ jobs:
       - name: Run Python unit tests
         run: pytest -q
 
+      # The steps below need a live warehouse. They're skipped when no
+      # Snowflake credentials are configured, so the workflow still passes on
+      # a fork or once the trial account behind this project has lapsed.
+      - name: Check for Snowflake credentials
+        id: creds
+        run: |
+          if [ -n "$SNOWFLAKE_ACCOUNT" ]; then
+            echo "available=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "available=false" >> "$GITHUB_OUTPUT"
+            echo "No Snowflake credentials set, skipping the dbt steps."
+          fi
+
       - name: dbt deps
+        if: steps.creds.outputs.available == 'true'
         working-directory: dbt/shopstream
         run: dbt deps
 
       # Builds and tests into CI_STAGING / CI_MARTS so pull requests never
       # touch real data (see the generate_schema_name macro).
       - name: dbt build against the CI schema
+        if: steps.creds.outputs.available == 'true'
         working-directory: dbt/shopstream
         run: dbt build --target ci --profiles-dir .
