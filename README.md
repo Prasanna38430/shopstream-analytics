@@ -81,6 +81,10 @@ streamlit run dashboard/app.py
 
 ![Dashboard](docs/images/dashboard.png)
 
+Further down, revenue and sentiment broken out by country and department, and the products customers rate best and worst:
+
+![Dashboard breakdowns](docs/images/dashboard_detail.png)
+
 ## Screenshots
 
 dbt lineage, from the three raw sources through staging and into the marts:
