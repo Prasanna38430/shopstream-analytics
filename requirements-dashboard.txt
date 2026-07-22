@@ -1,0 +1,12 @@
+# =========================================================
+#  Dashboard dependencies.
+#
+#  Kept out of requirements.txt so CI doesn't install a UI package it never
+#  uses. It has no conflicts with dbt, so install it into the same venv:
+#
+#     source .venv/Scripts/activate
+#     pip install -r requirements-dashboard.txt
+#     streamlit run dashboard/app.py
+# =========================================================
+
+streamlit>=1.40,<2.0
