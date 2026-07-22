@@ -68,7 +68,18 @@ The generator produces 100,000 orders, 10,000 customers, 500 products, and 3,000
 - `fact_orders` ends up around 98,000 rows after keeping only orders that reference a customer surviving the dedup
 - all 3,000 reviews get scored, 2,293 positive and 707 negative, covering 498 of the 500 products
 
-Quality is checked from a few angles: 35 dbt tests (uniqueness, not-null, accepted values, and referential integrity between the fact and its dimensions), a custom test asserting no negative amounts, 12 Great Expectations expectations, and 4 Python unit tests on the generator.
+Quality is checked from a few angles: 35 dbt data tests (uniqueness, not-null, accepted values, and referential integrity between the fact and its dimensions), a custom test asserting no negative amounts, 4 dbt unit tests that check the transformation logic against mock rows, 12 Great Expectations expectations, and 4 Python unit tests on the generator.
+
+## Dashboard
+
+A small Streamlit app reads the gold-layer marts so the pipeline ends in something you can actually look at, rather than tables in a warehouse.
+
+```bash
+pip install -r requirements-dashboard.txt
+streamlit run dashboard/app.py
+```
+
+![Dashboard](docs/images/dashboard.png)
 
 ## Screenshots
 
@@ -89,11 +100,13 @@ shopstream-analytics/
 ├── dbt/shopstream/      dbt project: staging, intermediate, marts, tests, macros
 ├── airflow/             docker-compose and the pipeline DAG
 ├── great_expectations/  the data quality suites
+├── dashboard/           streamlit app over the marts
 ├── tests/               Python unit tests
 ├── .github/workflows/   CI and CD
 ├── requirements.txt          dbt, ingestion, and test dependencies
 ├── requirements-quality.txt  Great Expectations (separate env)
-└── requirements-ml.txt       sentiment model (separate env)
+├── requirements-ml.txt       sentiment model (separate env)
+└── requirements-dashboard.txt  streamlit
 ```
 
 ## Running it yourself
@@ -161,6 +174,8 @@ On Windows, if your project path is long, create that venv somewhere short like 
 **CI builds into its own schemas.** The CI workflow runs against real Snowflake, but a target-name check in the `generate_schema_name` macro sends its output to `CI_STAGING` and `CI_MARTS`. Pull requests get tested against the warehouse without any risk to the real tables.
 
 **Nothing sensitive is committed.** Credentials live in a gitignored `.env` locally, in `env_file` for the Airflow containers, and in GitHub Actions secrets for CI. Generated CSVs aren't committed either, since they can be regenerated from the seeded script. The warehouse auto-suspends after 60 seconds so an idle trial doesn't burn through credits.
+
+**CI degrades gracefully.** The dbt steps in CI need a live warehouse, so they're skipped when no Snowflake credentials are configured. The Python tests always run. That keeps the workflow honest on a fork, or if the trial account behind this project lapses, instead of leaving a permanently red badge.
 
 ## Things I'd add next
 
