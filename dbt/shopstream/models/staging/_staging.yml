@@ -2,7 +2,7 @@ version: 2
 
 models:
   - name: stg_customers
-    description: Cleaned customers — deduplicated on email, countries mapped to ISO-2 codes.
+    description: Cleaned customers, deduplicated on email with countries mapped to ISO-2 codes.
     columns:
       - name: customer_id
         description: Primary key from the source system.
@@ -22,7 +22,7 @@ models:
         description: Date the customer signed up.
 
   - name: stg_products
-    description: Cleaned products — normalised categories, missing prices filled with the average.
+    description: Cleaned products with normalised categories and missing prices filled with the average.
     columns:
       - name: product_id
         description: Primary key.
@@ -39,7 +39,7 @@ models:
         description: Product brand.
 
   - name: stg_orders
-    description: Cleaned orders — zero/negative amounts removed, status lower-cased.
+    description: Cleaned orders with zero/negative amounts removed and status lower-cased.
     columns:
       - name: order_id
         description: Primary key.

@@ -1,9 +1,9 @@
 """Generate synthetic ShopStream data as CSV files.
 
 Customers and products are built first so that orders can reference IDs
-that actually exist. Some deliberate messiness is baked in — duplicate
+that actually exist. Some deliberate messiness is baked in: duplicate
 emails, missing countries and prices, inconsistent country codes, mixed
-category casing, a handful of bad order amounts — so the dbt staging layer
+category casing, and a handful of bad order amounts, so the dbt staging layer
 later has something realistic to clean up instead of perfect data.
 
 Usage:
@@ -147,7 +147,7 @@ def generate_orders(n: int, n_customers: int, n_products: int) -> None:
             product_id = random.randint(1, n_products)
             status = random.choice(ORDER_STATUSES)
 
-            # ~0.3% get a zero or negative amount — bad data that the
+            # ~0.3% get a zero or negative amount, bad data that the
             # staging layer should filter and the phase 5 test guards against
             if random.random() < 0.003:
                 amount = round(random.uniform(-50, 0), 2)

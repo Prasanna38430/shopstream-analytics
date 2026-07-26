@@ -1,5 +1,5 @@
 # =========================================================
-#  Data-quality environment — Great Expectations (Phase 7)
+#  Data-quality environment: Great Expectations (Phase 7)
 #
 #  GE's dependencies clash with dbt, so it lives in its OWN virtual
 #  environment. Set it up with:

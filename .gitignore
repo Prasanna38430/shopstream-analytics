@@ -8,7 +8,7 @@ __pycache__/
 venv/
 env/
 
-# Environment & secrets — NEVER commit these
+# Environment and secrets. Never commit these
 .env
 *.env
 !.env.example

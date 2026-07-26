@@ -1,5 +1,5 @@
 -- ============================================================
---  ShopStream — Warehouse, Database & Role setup
+--  ShopStream Warehouse, Database and Role setup
 --  Run as ACCOUNTADMIN in a Snowflake worksheet.
 -- ============================================================
 
@@ -18,7 +18,7 @@ CREATE WAREHOUSE IF NOT EXISTS SHOPSTREAM_WH
 CREATE DATABASE IF NOT EXISTS SHOPSTREAM
     COMMENT = 'ShopStream e-commerce analytics warehouse';
 
--- 3. A dedicated role for the pipeline (least-privilege principle —
+-- 3. A dedicated role for the pipeline (least-privilege principle,
 --    we don't run day-to-day work as ACCOUNTADMIN).
 CREATE ROLE IF NOT EXISTS SHOPSTREAM_ROLE;
 
