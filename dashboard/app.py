@@ -36,7 +36,7 @@ def run_query(sql: str) -> pd.DataFrame:
 st.title("ShopStream Analytics")
 st.caption("Gold-layer marts built with dbt on Snowflake, orchestrated by Airflow.")
 
-# --- headline numbers -------------------------------------------------------
+# headline numbers
 kpis = run_query(
     """
     select
@@ -53,14 +53,14 @@ c2.metric("Orders", f"{int(kpis['orders']):,}")
 c3.metric("Customers", f"{int(kpis['customers']):,}")
 c4.metric("Avg review sentiment", f"{float(kpis['sentiment']):+.2f}")
 
-# --- revenue over time ------------------------------------------------------
+# revenue over time
 st.subheader("Daily revenue")
 daily = run_query(
     "select order_date, total_revenue from marts.agg_daily_revenue order by order_date"
 )
 st.line_chart(daily.set_index("order_date")["total_revenue"], height=260)
 
-# --- breakdowns -------------------------------------------------------------
+# breakdowns
 left, right = st.columns(2)
 
 with left:
@@ -90,7 +90,7 @@ with right:
     )
     st.bar_chart(by_dept.set_index("department")["sentiment"], height=280)
 
-# --- review sentiment -------------------------------------------------------
+# review sentiment
 st.subheader("Products customers talk about")
 best, worst = st.columns(2)
 

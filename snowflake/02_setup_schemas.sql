@@ -1,6 +1,4 @@
--- ============================================================
 --  ShopStream Schema layers (Medallion architecture)
--- ============================================================
 
 USE ROLE SHOPSTREAM_ROLE;
 USE DATABASE SHOPSTREAM;

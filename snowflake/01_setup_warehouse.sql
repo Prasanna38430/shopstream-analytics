@@ -1,7 +1,5 @@
--- ============================================================
 --  ShopStream Warehouse, Database and Role setup
 --  Run as ACCOUNTADMIN in a Snowflake worksheet.
--- ============================================================
 
 USE ROLE ACCOUNTADMIN;
 

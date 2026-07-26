@@ -1,8 +1,6 @@
--- ============================================================
 --  ShopStream RAW landing tables
 --  Bronze layer: data lands here exactly as generated, warts and
 --  all. No constraints, no cleaning, that's dbt's job downstream.
--- ============================================================
 
 USE ROLE SHOPSTREAM_ROLE;
 USE DATABASE SHOPSTREAM;

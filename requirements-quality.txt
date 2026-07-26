@@ -1,4 +1,3 @@
-# =========================================================
 #  Data-quality environment: Great Expectations (Phase 7)
 #
 #  GE's dependencies clash with dbt, so it lives in its OWN virtual
@@ -10,7 +9,6 @@
 #
 #  The validation script reads the mart tables straight from Snowflake,
 #  so the connector and pandas belong here too.
-# =========================================================
 
 great-expectations>=1.2,<1.3
 snowflake-connector-python>=3.12,<4.0
